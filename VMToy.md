@@ -12,11 +12,15 @@ is printed to stdout and the process terminates.
 Opening the binary in BINJA reveals a standard main function, along with two interesting functions "PUSH" and "POP", this along
 with the challenge title gives a good indication that it's a vm that emulates a program.
 The main function is shown to print the aforementioned welcome message followed by a relatively big switch case:
+
 ![](https://i.imgur.com/eJFJmEk.png)
+
 Finding the starting point of the IP, we can copy out the program code, and start to convert the switchcase to python.
 It also becomes evident that the VM is stack based due to all the instructions utilising POP and PUSH, with common operations
 inbetween, such as:
+
 ![](https://i.imgur.com/nZLjwfD.png)
+
 with the switch statement endning in a push eax, inc ip.
 
 Implementing all this into a crude dissasembler produces the following assembly:
