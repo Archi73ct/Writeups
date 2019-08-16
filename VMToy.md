@@ -20,6 +20,7 @@ inbetween, such as:
 with the switch statement endning in a push eax, inc ip.
 
 Implementing all this into a crude dissasembler produces the following assembly:
+```
 PUSH: 0
 PUSH: 12596   ;; PUSH constants
 [... left out for brevity ...]
@@ -58,12 +59,12 @@ PUSH: 114
 PRINT r
 PUSH: 10
 PRINT
-
+```
 the XXX instruction i did not disassemble and it turns out to be irrelevant as long as a non zero number is pushed to the stack in
 place of it.
 All that is left is reversing the above sequence of ops and perform it on the pushed constants to get the password, the following
 python code accomplishes that:
-
+```
 for i in password:
 a = (i>>2)&0xfffffffff
 a = ~a
@@ -72,8 +73,8 @@ a = a^4095
 a = a*191
 a = a//1337
 a = a-10
-print(chr(a), end='')`
-
+print(chr(a), end='')
+```
 Doing this and we get the flag: flag{qemu_is_better_09831912393}
 
 
