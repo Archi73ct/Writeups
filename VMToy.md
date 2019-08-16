@@ -6,12 +6,16 @@ bintype  elf
 bits     32
 [...]
 
-Upon execution the binary will print a welcome message along with a pompt to enter the access code, giving a random input "ERROR" is printed to stdout and the process terminates.
+Upon execution the binary will print a welcome message along with a pompt to enter the access code, giving a random input "ERROR"
+is printed to stdout and the process terminates.
 
-Opening the binary in BINJA reveals a standard main function, along with two interesting functions "PUSH" and "POP", this along with the challenge title gives a good indication that it's a vm that emulates a program.
+Opening the binary in BINJA reveals a standard main function, along with two interesting functions "PUSH" and "POP", this along
+with the challenge title gives a good indication that it's a vm that emulates a program.
 The main function is shown to print the aforementioned welcome message followed by a relatively big switch case:
 ![](https://imgur.com/eJFJmEk)
-Finding the starting point of the IP, we can copy out the program code, and start to convert the switchcase to python. It also becomes evident that the VM is stack based due to all the instructions utilising POP and PUSH, with common operations inbetween, such as:
+Finding the starting point of the IP, we can copy out the program code, and start to convert the switchcase to python.
+It also becomes evident that the VM is stack based due to all the instructions utilising POP and PUSH, with common operations
+inbetween, such as:
 ![](https://imgur.com/nZLjwfD)
 with the switch statement endning in a push eax, inc ip.
 
@@ -55,10 +59,12 @@ PRINT r
 PUSH: 10
 PRINT
 
-the XXX instruction i did not disassemble and it turns out to be irrelevant as long as a non zero number is pushed to the stack in place of it.
-All that is left is reversing the above sequence of ops and perform it on the pushed constants to get the password, the following python code accomplishes that:
+the XXX instruction i did not disassemble and it turns out to be irrelevant as long as a non zero number is pushed to the stack in
+place of it.
+All that is left is reversing the above sequence of ops and perform it on the pushed constants to get the password, the following
+python code accomplishes that:
 
-`for i in password:
+for i in password:
 a = (i>>2)&0xfffffffff
 a = ~a
 a = 0-a
@@ -72,7 +78,7 @@ Doing this and we get the flag: flag{qemu_is_better_09831912393}
 
 
 This is the disassembler and emulator:
-`
+```
 ip = 0
 
 stack = []
@@ -213,4 +219,4 @@ while ip in range(0,len(program)):
     if jmped != True:    
         ip = ip + 2
     #print(stack)
-`
+```
